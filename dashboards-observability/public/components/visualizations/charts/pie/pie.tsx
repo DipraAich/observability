@@ -8,26 +8,35 @@ import { take, isEmpty } from 'lodash';
 import { Plt } from '../../plotly/plot';
 import { DEFAULT_PALETTE, HEX_CONTRAST_COLOR } from '../../../../../common/constants/colors';
 import { EmptyPlaceholder } from '../../../event_analytics/explorer/visualizations/shared_components/empty_placeholder';
+import { IVisualizationContainerProps } from '../../../../../common/types/explorer';
 
 export const Pie = ({ visualizations, layout, config }: any) => {
-  const { vis } = visualizations;
   const {
-    data,
-    metadata: { fields },
-  } = visualizations.data.rawVizData;
-  const { defaultAxes } = visualizations.data;
-  const { dataConfig = {}, layoutConfig = {} } = visualizations?.data?.userConfigs;
+    data: {
+      defaultAxes,
+      indexFields,
+      query,
+      rawVizData: {
+        data: queriedVizData,
+        metadata: { fields },
+      },
+      userConfigs,
+    },
+    vis: visMetaData,
+  }: IVisualizationContainerProps = visualizations;
+
+  const { dataConfig = {}, layoutConfig = {} } = userConfigs;
   const xaxis = dataConfig?.dimensions ? dataConfig.dimensions.filter((item) => item.label) : [];
-  const yaxis = dataConfig?.metrics ? dataConfig.metrics.filter((item) => item.label) : [];
+  const yaxis = dataConfig?.series ? dataConfig.series.filter((item) => item.label) : [];
   const type = dataConfig?.chartStyles?.mode ? dataConfig?.chartStyles?.mode[0]?.modeId : 'pie';
   const lastIndex = fields.length - 1;
   const colorTheme = dataConfig?.chartStyles?.colorTheme
     ? dataConfig?.chartStyles?.colorTheme
     : { name: DEFAULT_PALETTE };
-  const showLegend = dataConfig?.legend?.showLegend === 'hidden' ? false : vis.showlegend;
-  const legendPosition = dataConfig?.legend?.position || vis.legendposition;
-  const legendSize = dataConfig?.legend?.size || vis.legendSize;
-  const labelSize = dataConfig?.chartStyles?.labelSize || vis.labelSize;
+  const showLegend = dataConfig?.legend?.showLegend === 'hidden' ? false : visMetaData.showlegend;
+  const legendPosition = dataConfig?.legend?.position || visMetaData.legendposition;
+  const legendSize = dataConfig?.legend?.size || visMetaData.legendSize;
+  const labelSize = dataConfig?.chartStyles?.labelSize || visMetaData.labelSize;
   const tooltipMode =
     dataConfig?.tooltipOptions?.tooltipMode !== undefined
       ? dataConfig.tooltipOptions.tooltipMode
@@ -37,14 +46,13 @@ export const Pie = ({ visualizations, layout, config }: any) => {
       ? dataConfig.tooltipOptions.tooltipText
       : 'all';
 
-  if (isEmpty(xaxis) || isEmpty(yaxis))
-    return <EmptyPlaceholder icon={visualizations?.vis?.icontype} />;
+  if (isEmpty(xaxis) || isEmpty(yaxis)) return <EmptyPlaceholder icon={visMetaData?.icontype} />;
 
   let valueSeries;
   if (!isEmpty(xaxis) && !isEmpty(yaxis)) {
     valueSeries = [...yaxis];
   } else {
-    valueSeries = defaultAxes.yaxis || take(fields, lastIndex > 0 ? lastIndex : 1);
+    valueSeries = defaultAxes?.yaxis || take(fields, lastIndex > 0 ? lastIndex : 1);
   }
 
   const invertHex = (hex: string) =>
@@ -59,16 +67,16 @@ export const Pie = ({ visualizations, layout, config }: any) => {
   const labelsOfXAxis = useMemo(() => {
     let legendLabels = [];
     if (xaxis.length > 0) {
-      let dimLabelsArray = data[xaxis[0].label];
+      let dimLabelsArray = queriedVizData[xaxis[0].label];
       for (let i = 0; i < xaxis.length - 1; i++) {
-        dimLabelsArray = createLegendLabels(dimLabelsArray, data[xaxis[i + 1].label]);
+        dimLabelsArray = createLegendLabels(dimLabelsArray, queriedVizData[xaxis[i + 1].label]);
       }
       legendLabels = dimLabelsArray;
     } else {
-      legendLabels = data[fields[lastIndex].name];
+      legendLabels = queriedVizData[fields[lastIndex].name];
     }
     return legendLabels;
-  }, [xaxis, data, fields, createLegendLabels]);
+  }, [xaxis, queriedVizData, fields, createLegendLabels]);
 
   const hexColor = invertHex(colorTheme);
   const pies = useMemo(
@@ -78,7 +86,7 @@ export const Pie = ({ visualizations, layout, config }: any) => {
           colorTheme.name !== DEFAULT_PALETTE
             ? {
                 marker: {
-                  colors: [...Array(data[field.name].length).fill(colorTheme.childColor)],
+                  colors: [...Array(queriedVizData[field.name].length).fill(colorTheme.childColor)],
                   line: {
                     color: hexColor,
                     width: 1,
@@ -88,7 +96,7 @@ export const Pie = ({ visualizations, layout, config }: any) => {
             : undefined;
         return {
           labels: labelsOfXAxis,
-          values: data[field.label],
+          values: queriedVizData[field.label],
           type: 'pie',
           name: field.name,
           hole: type === 'pie' ? 0 : 0.5,
@@ -107,7 +115,7 @@ export const Pie = ({ visualizations, layout, config }: any) => {
           },
         };
       }),
-    [valueSeries, valueSeries, data, labelSize, labelsOfXAxis, colorTheme]
+    [valueSeries, queriedVizData, labelSize, labelsOfXAxis, colorTheme]
   );
 
   const isAtleastOneFullRow = Math.floor(valueSeries.length / 3) > 0;
