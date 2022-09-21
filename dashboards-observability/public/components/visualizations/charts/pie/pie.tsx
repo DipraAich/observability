@@ -9,6 +9,7 @@ import { Plt } from '../../plotly/plot';
 import { DEFAULT_PALETTE, HEX_CONTRAST_COLOR } from '../../../../../common/constants/colors';
 import { EmptyPlaceholder } from '../../../event_analytics/explorer/visualizations/shared_components/empty_placeholder';
 import { IVisualizationContainerProps } from '../../../../../common/types/explorer';
+import { AGGREGATIONS, GROUPBY } from '../../../../../common/constants/explorer';
 
 export const Pie = ({ visualizations, layout, config }: any) => {
   const {
@@ -26,8 +27,8 @@ export const Pie = ({ visualizations, layout, config }: any) => {
   }: IVisualizationContainerProps = visualizations;
 
   const { dataConfig = {}, layoutConfig = {} } = userConfigs;
-  const xaxis = dataConfig?.dimensions ? dataConfig.dimensions.filter((item) => item.label) : [];
-  const yaxis = dataConfig?.series ? dataConfig.series.filter((item) => item.label) : [];
+  const xaxis = dataConfig?[GROUPBY] ? dataConfig[GROUPBY].filter((item) => item.label) : [];
+  const yaxis = dataConfig?[AGGREGATIONS] ? dataConfig[AGGREGATIONS].filter((item) => item.label) : [];
   const type = dataConfig?.chartStyles?.mode ? dataConfig?.chartStyles?.mode[0]?.modeId : 'pie';
   const lastIndex = fields.length - 1;
   const colorTheme = dataConfig?.chartStyles?.colorTheme
