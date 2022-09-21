@@ -14,7 +14,7 @@ import {
   PLOTLY_COLOR,
   visChartTypes,
 } from '../../../../../common/constants/shared';
-import { hexToRgb } from '../../../../components/event_analytics/utils/utils';
+import { getPropName, hexToRgb } from '../../../../components/event_analytics/utils/utils';
 import { EmptyPlaceholder } from '../../../event_analytics/explorer/visualizations/shared_components/empty_placeholder';
 
 export const Line = ({ visualizations, layout, config }: any) => {
@@ -139,9 +139,9 @@ export const Line = ({ visualizations, layout, config }: any) => {
 
       return {
         x: data[!isEmpty(xaxis) ? xaxis[0]?.label : fields[lastIndex].name],
-        y: data[`${field.aggregation}(${field.name})`],
+        y: data[getPropName(field)],
         type: isBarMode ? 'bar' : 'scatter',
-        name: field.label,
+        name: getPropName(field),
         mode,
         ...(!['bar', 'markers'].includes(mode) && fillProperty),
         line: {

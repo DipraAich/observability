@@ -867,26 +867,27 @@ export const Explorer = ({
             }
             : undefined;
 
-        await dispatch(
-          changeVizConfig({
-            tabId,
-            vizId: curVisId,
-            data: {
-              dataConfig: {
-                metrics: statsTokens.aggregations.map((agg) => ({
-                  label: agg.function?.value_expression,
-                  name: agg.function?.value_expression,
-                  aggregation: agg.function?.name,
-                })),
-                dimensions: statsTokens.groupby?.group_fields?.map((agg) => ({
-                  label: agg.name ?? '',
-                  name: agg.name ?? '',
-                })),
-                span,
-              },
-            },
-          })
-        );
+            await dispatch(
+              changeVizConfig({
+                tabId,
+                vizId: curVisId,
+                data: {
+                  dataConfig: {
+                    metrics: statsTokens.aggregations.map((agg) => ({
+                      label: agg.function?.value_expression,
+                      name: agg.function?.value_expression,
+                      aggregation: agg.function?.name,
+                      alias: agg.alias,
+                    })),
+                    dimensions: statsTokens.groupby?.group_fields?.map((agg) => ({
+                      label: agg.name ?? '',
+                      name: agg.name ?? '',
+                      alias: agg.alias ?? '',
+                    })),
+                  },
+                },
+              })
+            );
       }
     },
     [tempQuery, query, selectedContentTabId]

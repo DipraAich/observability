@@ -8,6 +8,7 @@ import { take, isEmpty } from 'lodash';
 import { Plt } from '../../plotly/plot';
 import { DEFAULT_PALETTE, HEX_CONTRAST_COLOR } from '../../../../../common/constants/colors';
 import { EmptyPlaceholder } from '../../../event_analytics/explorer/visualizations/shared_components/empty_placeholder';
+import { getPropName } from '../../..//event_analytics/utils/utils';
 
 export const Pie = ({ visualizations, layout, config }: any) => {
   const { vis } = visualizations;
@@ -17,6 +18,7 @@ export const Pie = ({ visualizations, layout, config }: any) => {
   } = visualizations.data.rawVizData;
   const { defaultAxes } = visualizations.data;
   const { dataConfig = {}, layoutConfig = {} } = visualizations?.data?.userConfigs;
+  console.log(dataConfig);
   const xaxis = dataConfig?.dimensions ? dataConfig.dimensions.filter((item) => item.label) : [];
   const yaxis = dataConfig?.metrics ? dataConfig.metrics.filter((item) => item.label) : [];
   const type = dataConfig?.chartStyles?.mode ? dataConfig?.chartStyles?.mode[0]?.modeId : 'pie';
@@ -90,7 +92,7 @@ export const Pie = ({ visualizations, layout, config }: any) => {
           labels: labelsOfXAxis,
           values: data[field.label],
           type: 'pie',
-          name: field.name,
+          name: getPropName(field),
           hole: type === 'pie' ? 0 : 0.5,
           text: field.name,
           textinfo: 'percent',

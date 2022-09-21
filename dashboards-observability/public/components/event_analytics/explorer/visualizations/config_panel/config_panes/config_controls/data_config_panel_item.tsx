@@ -249,10 +249,8 @@ export const DataConfigPanelItem = ({ fieldOptionList, visualizations }: any) =>
                     <EuiFormRow label="Custom label">
                       <EuiFieldText
                         placeholder="Custom label"
-                        value={singleField.custom_label}
-                        onChange={(e) =>
-                          updateList(e.target.value, index, sectionName, 'custom_label')
-                        }
+                        value={singleField.alias}
+                        onChange={(e) => updateList(e.target.value, index, sectionName, 'alias')}
                         aria-label="Use aria labels when no actual label is in use"
                       />
                     </EuiFormRow>

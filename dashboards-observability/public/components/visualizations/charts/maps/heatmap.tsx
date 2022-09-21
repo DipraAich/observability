@@ -3,20 +3,23 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useMemo } from 'react';
-import { uniq, has, isEmpty, indexOf } from 'lodash';
-import Plotly from 'plotly.js-dist';
 import { colorPalette } from '@elastic/eui';
-import { Plt } from '../../plotly/plot';
-import { EmptyPlaceholder } from '../../../event_analytics/explorer/visualizations/shared_components/empty_placeholder';
+import { has, isEmpty, uniq } from 'lodash';
+import Plotly from 'plotly.js-dist';
+import React, { useMemo } from 'react';
 import {
   HEATMAP_PALETTE_COLOR,
-  SINGLE_COLOR_PALETTE,
-  OPACITY,
   HEATMAP_SINGLE_COLOR,
+  OPACITY,
+  SINGLE_COLOR_PALETTE,
 } from '../../../../../common/constants/colors';
-import { hexToRgb, lightenColor } from '../../../../components/event_analytics/utils/utils';
-import { NUMERICAL_FIELDS } from '../../../../../common/constants/shared';
+import {
+  getPropName,
+  hexToRgb,
+  lightenColor,
+} from '../../../../components/event_analytics/utils/utils';
+import { EmptyPlaceholder } from '../../../event_analytics/explorer/visualizations/shared_components/empty_placeholder';
+import { Plt } from '../../plotly/plot';
 
 export const HeatMap = ({ visualizations, layout, config }: any) => {
   const {
@@ -37,7 +40,7 @@ export const HeatMap = ({ visualizations, layout, config }: any) => {
     isEmpty(zMetrics) ||
     isEmpty(data[xaxisField.label]) ||
     isEmpty(data[yaxisField.label]) ||
-    isEmpty(data[`${zMetrics.aggregation}(${zMetrics.name})`]) ||
+    isEmpty(data[getPropName(zMetrics)]) ||
     dataConfig?.dimensions.length > 2 ||
     dataConfig?.metrics.length > 1
   )
@@ -81,7 +84,7 @@ export const HeatMap = ({ visualizations, layout, config }: any) => {
     // maps bukcets to metrics
     for (let i = 0; i < data[xaxisField.label].length; i++) {
       buckets[`${data[xaxisField.label][i]},${data[yaxisField.label][i]}`] =
-        data[`${zMetrics.aggregation}(${zMetrics.name})`][i];
+        data[getPropName(zMetrics)][i];
     }
 
     // initialize empty 2 dimensional array, inner loop for each xaxis field, outer loop for yaxis

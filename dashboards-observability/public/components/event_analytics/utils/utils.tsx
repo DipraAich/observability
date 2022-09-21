@@ -121,8 +121,8 @@ export const populateDataGrid = (
           </table>
         )}
         {explorerFields?.queriedFields &&
-          explorerFields?.queriedFields?.length > 0 &&
-          explorerFields.selectedFields?.length === 0 ? null : (
+        explorerFields?.queriedFields?.length > 0 &&
+        explorerFields.selectedFields?.length === 0 ? null : (
           <table className="osd-table table" data-test-subj="docTable">
             <thead>{header2}</thead>
             <tbody>{body2}</tbody>
@@ -353,4 +353,16 @@ export const fetchConfigObject = (editor: string, propsOptions: any) => {
     default:
       return null;
   }
+};
+
+export const getPropName = (queriedVizObj: {
+  alias?: string;
+  aggregation: string;
+  name: string;
+  label: string;
+}) => {
+  if (queriedVizObj.alias === '' || queriedVizObj.alias === undefined) {
+    return `${queriedVizObj.aggregation}(${queriedVizObj.name})`;
+  }
+  return queriedVizObj.alias;
 };
