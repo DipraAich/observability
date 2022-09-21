@@ -27,8 +27,10 @@ export const Pie = ({ visualizations, layout, config }: any) => {
   }: IVisualizationContainerProps = visualizations;
 
   const { dataConfig = {}, layoutConfig = {} } = userConfigs;
-  const xaxis = dataConfig?[GROUPBY] ? dataConfig[GROUPBY].filter((item) => item.label) : [];
-  const yaxis = dataConfig?[AGGREGATIONS] ? dataConfig[AGGREGATIONS].filter((item) => item.label) : [];
+  const xaxis = dataConfig[GROUPBY] ? dataConfig[GROUPBY].filter((item) => item.label) : [];
+  const yaxis = dataConfig[AGGREGATIONS]
+    ? dataConfig[AGGREGATIONS].filter((item) => item.label)
+    : [];
   const type = dataConfig?.chartStyles?.mode ? dataConfig?.chartStyles?.mode[0]?.modeId : 'pie';
   const lastIndex = fields.length - 1;
   const colorTheme = dataConfig?.chartStyles?.colorTheme
