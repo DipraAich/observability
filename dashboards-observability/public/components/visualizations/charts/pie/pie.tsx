@@ -18,7 +18,6 @@ export const Pie = ({ visualizations, layout, config }: any) => {
   } = visualizations.data.rawVizData;
   const { defaultAxes } = visualizations.data;
   const { dataConfig = {}, layoutConfig = {} } = visualizations?.data?.userConfigs;
-  console.log(dataConfig);
   const xaxis = dataConfig?.dimensions ? dataConfig.dimensions.filter((item) => item.label) : [];
   const yaxis = dataConfig?.metrics ? dataConfig.metrics.filter((item) => item.label) : [];
   const type = dataConfig?.chartStyles?.mode ? dataConfig?.chartStyles?.mode[0]?.modeId : 'pie';

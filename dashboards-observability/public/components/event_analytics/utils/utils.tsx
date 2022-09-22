@@ -12,7 +12,7 @@ import { IExplorerFields, IField } from '../../../../common/types/explorer';
 import { DocViewRow, IDocType } from '../explorer/events_views';
 import { HttpStart } from '../../../../../../src/core/public';
 import PPLService from '../../../services/requests/ppl';
-import { TIME_INTERVAL_OPTIONS } from '../../../../common/constants/explorer';
+import { CUSTOM_LABEL, TIME_INTERVAL_OPTIONS } from '../../../../common/constants/explorer';
 import { PPL_DATE_FORMAT, PPL_INDEX_REGEX } from '../../../../common/constants/shared';
 import { ConfigTooltip } from '../explorer/visualizations/config_panel/config_panes/config_controls';
 
@@ -356,13 +356,13 @@ export const fetchConfigObject = (editor: string, propsOptions: any) => {
 };
 
 export const getPropName = (queriedVizObj: {
-  alias?: string;
+  customLabel?: string;
   aggregation: string;
   name: string;
   label: string;
 }) => {
-  if (queriedVizObj.alias === '' || queriedVizObj.alias === undefined) {
+  if (queriedVizObj[CUSTOM_LABEL] === '' || queriedVizObj[CUSTOM_LABEL] === undefined) {
     return `${queriedVizObj.aggregation}(${queriedVizObj.name})`;
   }
-  return queriedVizObj.alias;
+  return queriedVizObj[CUSTOM_LABEL];
 };

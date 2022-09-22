@@ -152,3 +152,5 @@ export const DefaultGaugeChartParameters: DefaultGaugeChartParametersProps = {
   LegendPlacement: 'center',
   ThresholdsMaxLimit: 1
 }
+
+export const CUSTOM_LABEL = 'customLabel';

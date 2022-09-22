@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { CUSTOM_LABEL } from '../../../../common/constants/explorer';
 import { PPLNode } from '../node';
 
 export class AggregateTerm extends PPLNode {
@@ -10,7 +11,7 @@ export class AggregateTerm extends PPLNode {
     name: string,
     children: Array<PPLNode>,
     private statsFunction: PPLNode,
-    private alias: string
+    private customLabel: string
   ) {
     super(name, children);
   }
@@ -18,13 +19,15 @@ export class AggregateTerm extends PPLNode {
   getTokens() {
     return {
       function: this.statsFunction.getTokens(),
-      alias: this.alias,
+      [CUSTOM_LABEL]: this[CUSTOM_LABEL],
     };
   }
 
   toString(): string {
-    if (this.alias) {
-      return `${this.statsFunction.toString()}${this.alias ? ` as ${this.alias}` : ''}`;
+    if (this[CUSTOM_LABEL]) {
+      return `${this.statsFunction.toString()}${
+        this[CUSTOM_LABEL] ? ` as ${this[CUSTOM_LABEL]}` : ''
+      }`;
     }
     return `${this.statsFunction.toString()}`;
   }

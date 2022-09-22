@@ -24,6 +24,7 @@ import { changeQuery } from '../../../../../redux/slices/query_slice';
 import { change as changeVizConfig } from '../../../../../redux/slices/viualization_config_slice';
 import {
   AGGREGATION_OPTIONS,
+  CUSTOM_LABEL,
   numericalTypes,
   RAW_QUERY,
   TIME_INTERVAL_OPTIONS,
@@ -41,7 +42,7 @@ const initialDimensionEntry = {
 };
 
 const initialMetricEntry = {
-  alias: '',
+  [CUSTOM_LABEL]: '',
   label: '',
   name: '',
   aggregation: 'count',
@@ -73,7 +74,7 @@ export const DataConfigPanelItem = ({ fieldOptionList, visualizations }: any) =>
     let listItem = { ...list[name][index] };
     listItem = {
       ...listItem,
-      [field === 'custom_label' ? 'alias' : field]: value,
+      [field]: value,
     };
     if (field === 'label') {
       listItem.name = value;
@@ -249,8 +250,10 @@ export const DataConfigPanelItem = ({ fieldOptionList, visualizations }: any) =>
                     <EuiFormRow label="Custom label">
                       <EuiFieldText
                         placeholder="Custom label"
-                        value={singleField.alias}
-                        onChange={(e) => updateList(e.target.value, index, sectionName, 'alias')}
+                        value={singleField[CUSTOM_LABEL]}
+                        onChange={(e) =>
+                          updateList(e.target.value, index, sectionName, CUSTOM_LABEL)
+                        }
                         aria-label="Use aria labels when no actual label is in use"
                       />
                     </EuiFormRow>

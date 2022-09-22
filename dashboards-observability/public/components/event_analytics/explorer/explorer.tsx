@@ -51,6 +51,7 @@ import {
   TAB_CHART_ID,
   DEFAULT_AVAILABILITY_QUERY,
   DATE_PICKER_FORMAT,
+  CUSTOM_LABEL,
 } from '../../../../common/constants/explorer';
 import {
   PPL_STATS_REGEX,
@@ -631,7 +632,7 @@ export const Explorer = ({
                               0
                             )}
                             showResetButton={false}
-                            onResetQuery={() => { }}
+                            onResetQuery={() => {}}
                           />
                         </EuiFlexItem>
                         <EuiFlexItem grow={false}>
@@ -672,7 +673,7 @@ export const Explorer = ({
                               <HitsCounter
                                 hits={totalHits}
                                 showResetButton={false}
-                                onResetQuery={() => { }}
+                                onResetQuery={() => {}}
                               />
                             </EuiFlexItem>
                             <EuiFlexItem grow={false}>since {liveTimestamp}</EuiFlexItem>
@@ -849,45 +850,46 @@ export const Explorer = ({
         const span =
           statsTokens.groupby?.span !== null
             ? {
-              time_field: [
-                {
-                  name: statsTokens.groupby?.span.span_expression.field,
-                  type: 'timestamp',
-                  label: statsTokens.groupby?.span.span_expression.field,
-                },
-              ],
-              unit: [
-                {
-                  text: timeUnitValue,
-                  value: statsTokens.groupby?.span.span_expression.time_unit,
-                  label: timeUnitValue,
-                },
-              ],
-              interval: statsTokens.groupby?.span.span_expression.literal_value,
-            }
+                time_field: [
+                  {
+                    name: statsTokens.groupby?.span.span_expression.field,
+                    type: 'timestamp',
+                    label: statsTokens.groupby?.span.span_expression.field,
+                  },
+                ],
+                unit: [
+                  {
+                    text: timeUnitValue,
+                    value: statsTokens.groupby?.span.span_expression.time_unit,
+                    label: timeUnitValue,
+                  },
+                ],
+                interval: statsTokens.groupby?.span.span_expression.literal_value,
+              }
             : undefined;
 
-            await dispatch(
-              changeVizConfig({
-                tabId,
-                vizId: curVisId,
-                data: {
-                  dataConfig: {
-                    metrics: statsTokens.aggregations.map((agg) => ({
-                      label: agg.function?.value_expression,
-                      name: agg.function?.value_expression,
-                      aggregation: agg.function?.name,
-                      alias: agg.alias,
-                    })),
-                    dimensions: statsTokens.groupby?.group_fields?.map((agg) => ({
-                      label: agg.name ?? '',
-                      name: agg.name ?? '',
-                      alias: agg.alias ?? '',
-                    })),
-                  },
-                },
-              })
-            );
+        await dispatch(
+          changeVizConfig({
+            tabId,
+            vizId: curVisId,
+            data: {
+              dataConfig: {
+                metrics: statsTokens.aggregations.map((agg) => ({
+                  label: agg.function?.value_expression,
+                  name: agg.function?.value_expression,
+                  aggregation: agg.function?.name,
+                  [CUSTOM_LABEL]: agg[CUSTOM_LABEL],
+                })),
+                dimensions: statsTokens.groupby?.group_fields?.map((agg) => ({
+                  label: agg.name ?? '',
+                  name: agg.name ?? '',
+                  [CUSTOM_LABEL]: agg[CUSTOM_LABEL] ?? '',
+                })),
+                span,
+              },
+            },
+          })
+        );
       }
     },
     [tempQuery, query, selectedContentTabId]

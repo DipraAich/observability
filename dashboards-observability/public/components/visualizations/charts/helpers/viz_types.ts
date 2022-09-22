@@ -13,7 +13,7 @@ import {
 } from '../../../../../common/types/explorer';
 import { visChartTypes } from '../../../../../common/constants/shared';
 import { QueryManager } from '../../../../../common/query_manager';
-import { TIME_INTERVAL_OPTIONS } from '../../../../../common/constants/explorer';
+import { CUSTOM_LABEL, TIME_INTERVAL_OPTIONS } from '../../../../../common/constants/explorer';
 interface IVizContainerProps {
   vizId: string;
   appData?: { fromApp: boolean };
@@ -34,7 +34,7 @@ const initialDimensionEntry = {
 };
 
 const initialMetricEntry = {
-  alias: '',
+  [CUSTOM_LABEL]: '',
   label: '',
   name: '',
   aggregation: 'count',
@@ -158,7 +158,7 @@ const defaultUserConfigs = (queryString, visualizationName: string) => {
       tempUserConfigs = {
         ...tempUserConfigs,
         metrics: statsTokens.aggregations.map((agg) => ({
-          alias: agg.alias,
+          [CUSTOM_LABEL]: agg[CUSTOM_LABEL],
           label: agg.function?.value_expression,
           name: agg.function?.value_expression,
           aggregation: agg.function?.name,
