@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { CUSTOM_LABEL } from '../../../../common/constants/explorer';
 import { PPLNode } from '../node';
 
 export class Span extends PPLNode {
@@ -19,13 +18,11 @@ export class Span extends PPLNode {
   getTokens() {
     return {
       span_expression: this.spanExpression.getTokens(),
-      [CUSTOM_LABEL]: this[CUSTOM_LABEL],
+      customLabel: this.customLabel,
     };
   }
 
   toString(): string {
-    return `${this.spanExpression.toString()}${
-      this[CUSTOM_LABEL] ? ` as ${this[CUSTOM_LABEL]}` : ''
-    }`;
+    return `${this.spanExpression.toString()}${this.customLabel ? ` as ${this.customLabel}` : ''}`;
   }
 }
