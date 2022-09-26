@@ -15,6 +15,7 @@ import { VIS_CHART_TYPES } from '../../../../../common/constants/shared';
 import { QueryManager } from '../../../../../common/query_manager';
 import {
   AGGREGATIONS,
+  CUSTOM_LABEL,
   GROUPBY,
   TIME_INTERVAL_OPTIONS,
 } from '../../../../../common/constants/explorer';
@@ -38,7 +39,7 @@ const initialDimensionEntry = {
 };
 
 const initialSeriesEntry = {
-  alias: '',
+  [CUSTOM_LABEL]: '',
   label: '',
   name: '',
   aggregation: 'count',
@@ -134,7 +135,7 @@ const defaultUserConfigs = (queryString, visualizationName: string) => {
       tempUserConfigs = {
         ...tempUserConfigs,
         [AGGREGATIONS]: statsTokens.aggregations.map((agg) => ({
-          alias: agg.alias,
+          [CUSTOM_LABEL]: agg[CUSTOM_LABEL],
           label: agg.function?.value_expression,
           name: agg.function?.value_expression,
           aggregation: agg.function?.name,
@@ -162,10 +163,12 @@ const getUserConfigs = (
       case VIS_CHART_TYPES.HeatMap:
         configOfUser = {
           ...userSelectedConfigs,
-          dataConfig: {
-            ...userSelectedConfigs?.dataConfig,
-            ...defaultUserConfigs(query, visName),
-          },
+          dataConfig:
+            userSelectedConfigs?.dataConfig === undefined
+              ? { ...defaultUserConfigs(query, visName) }
+              : {
+                  ...userSelectedConfigs?.dataConfig,
+                },
         };
         break;
       case VIS_CHART_TYPES.TreeMap:

@@ -53,6 +53,7 @@ import {
   DATE_PICKER_FORMAT,
   GROUPBY,
   AGGREGATIONS,
+  CUSTOM_LABEL,
 } from '../../../../common/constants/explorer';
 import {
   PPL_STATS_REGEX,
@@ -81,7 +82,12 @@ import { getVizContainerProps } from '../../visualizations/charts/helpers';
 import { parseGetSuggestions, onItemSelect } from '../../common/search/autocomplete_logic';
 import { formatError } from '../utils';
 import { sleep } from '../../common/live_tail/live_tail_button';
-import { statsChunk, GroupByChunk } from '../../../../common/query_manager/ast/types';
+import {
+  statsChunk,
+  GroupByChunk,
+  StatsAggregationChunk,
+  GroupField,
+} from '../../../../common/query_manager/ast/types';
 
 const TYPE_TAB_MAPPING = {
   [SAVED_QUERY]: TAB_EVENT_ID,
@@ -898,10 +904,12 @@ export const Explorer = ({
             label: agg.function?.value_expression,
             name: agg.function?.value_expression,
             aggregation: agg.function?.name,
+            [CUSTOM_LABEL]: agg[CUSTOM_LABEL as keyof StatsAggregationChunk],
           })),
           [GROUPBY]: groupByToken?.group_fields?.map((agg) => ({
             label: agg.name ?? '',
             name: agg.name ?? '',
+            [CUSTOM_LABEL]: agg[CUSTOM_LABEL as keyof GroupField] ?? '',
           })),
           span,
         };
@@ -925,9 +933,7 @@ export const Explorer = ({
 
       if (selectedContentTabId === TAB_CHART_ID) {
         // parse stats section on every search
-        const qm = new QueryManager();
         const statsTokens = qm.queryParser().parse(tempQuery).getStats();
-
         const updatedDataConfig = getUpdatedDataConfig(statsTokens);
         await dispatch(
           changeVizConfig({

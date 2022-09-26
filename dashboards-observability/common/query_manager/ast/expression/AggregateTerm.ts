@@ -10,7 +10,7 @@ export class AggregateTerm extends PPLNode {
     name: string,
     children: Array<PPLNode>,
     private statsFunction: PPLNode,
-    private alias: string
+    private customLabel: string
   ) {
     super(name, children);
   }
@@ -18,13 +18,13 @@ export class AggregateTerm extends PPLNode {
   getTokens() {
     return {
       function: this.statsFunction.getTokens(),
-      alias: this.alias,
+      customLabel: this.customLabel,
     };
   }
 
   toString(): string {
-    if (this.alias) {
-      return `${this.statsFunction.toString()}${this.alias ? ` as ${this.alias}` : ''}`;
+    if (this.customLabel) {
+      return `${this.statsFunction.toString()}${this.customLabel ? ` as ${this.customLabel}` : ''}`;
     }
     return `${this.statsFunction.toString()}`;
   }

@@ -164,3 +164,4 @@ export const DEFAULT_GAUGE_CHART_PARAMETERS: DefaultGaugeChartParametersProps = 
 
 export const GROUPBY = 'dimensions';
 export const AGGREGATIONS = 'series';
+export const CUSTOM_LABEL = 'customLabel';

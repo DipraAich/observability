@@ -3,38 +3,38 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useEffect, useState, useContext, useCallback, useMemo } from 'react';
-import { some } from 'lodash';
 import {
-  EuiTitle,
-  EuiComboBox,
-  EuiSpacer,
   EuiButton,
+  EuiComboBox,
+  EuiFieldNumber,
   EuiFieldText,
   EuiFlexItem,
   EuiFormRow,
   EuiIcon,
   EuiPanel,
+  EuiSpacer,
   EuiText,
-  EuiFieldNumber,
+  EuiTitle,
   htmlIdGenerator,
 } from '@elastic/eui';
-import { useDispatch, batch } from 'react-redux';
-import { changeQuery } from '../../../../../redux/slices/query_slice';
-import { change as changeVizConfig } from '../../../../../redux/slices/viualization_config_slice';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { batch, useDispatch } from 'react-redux';
 import {
   AGGREGATIONS,
   AGGREGATION_OPTIONS,
+  customLabel,
+  CUSTOM_LABEL,
   GROUPBY,
-  NUMERICAL_TYPES,
   RAW_QUERY,
   TIME_INTERVAL_OPTIONS,
 } from '../../../../../../../../common/constants/explorer';
-import { ButtonGroupItem } from './config_button_group';
 import { VIS_CHART_TYPES } from '../../../../../../../../common/constants/shared';
+import { composeAggregations } from '../../../../../../../../common/query_manager/utils';
 import { ConfigList, DataConfigPanelProps } from '../../../../../../../../common/types/explorer';
 import { TabContext } from '../../../../../hooks';
-import { composeAggregations } from '../../../../../../../../common/query_manager/utils';
+import { changeQuery } from '../../../../../redux/slices/query_slice';
+import { change as changeVizConfig } from '../../../../../redux/slices/viualization_config_slice';
+import { ButtonGroupItem } from './config_button_group';
 
 const initialDimensionEntry = {
   label: '',
@@ -42,7 +42,7 @@ const initialDimensionEntry = {
 };
 
 const initialSeriesEntry = {
-  alias: '',
+  [CUSTOM_LABEL]: '',
   label: '',
   name: '',
   aggregation: 'count',
@@ -84,7 +84,7 @@ export const DataConfigPanelItem = ({
     let listItem = { ...list[name][index] };
     listItem = {
       ...listItem,
-      [field === 'custom_label' ? 'alias' : field]: value,
+      [field]: value,
     };
     if (field === 'label') {
       listItem.name = value;
@@ -140,8 +140,8 @@ export const DataConfigPanelItem = ({
             ...userConfigs,
             dataConfig: {
               ...userConfigs.dataConfig,
-              [GROUPBY]: configList[GROUPBY],
-              [AGGREGATIONS]: configList[AGGREGATIONS],
+              [GROUPBY]: updatedConfigList[GROUPBY],
+              [AGGREGATIONS]: updatedConfigList[AGGREGATIONS],
             },
           },
         })
@@ -171,8 +171,8 @@ export const DataConfigPanelItem = ({
             data: {
               dataConfig: {
                 ...userConfigs.dataConfig,
-                [GROUPBY]: configList[GROUPBY],
-                [AGGREGATIONS]: configList[AGGREGATIONS],
+                [GROUPBY]: updatedConfigList[GROUPBY],
+                [AGGREGATIONS]: updatedConfigList[AGGREGATIONS],
                 breakdowns: updatedConfigList.breakdowns,
                 span: updatedConfigList.span,
               },
@@ -276,9 +276,9 @@ export const DataConfigPanelItem = ({
                     <EuiFormRow label="Custom label">
                       <EuiFieldText
                         placeholder="Custom label"
-                        value={singleField.custom_label}
+                        value={singleField[CUSTOM_LABEL]}
                         onChange={(e) =>
-                          updateList(e.target.value, index, sectionName, 'custom_label')
+                          updateList(e.target.value, index, sectionName, CUSTOM_LABEL)
                         }
                         aria-label="Use aria labels when no actual label is in use"
                       />

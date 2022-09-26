@@ -10,6 +10,7 @@ import { DEFAULT_PALETTE, HEX_CONTRAST_COLOR } from '../../../../../common/const
 import { EmptyPlaceholder } from '../../../event_analytics/explorer/visualizations/shared_components/empty_placeholder';
 import { IVisualizationContainerProps } from '../../../../../common/types/explorer';
 import { AGGREGATIONS, GROUPBY } from '../../../../../common/constants/explorer';
+import { getPropName } from '../../..//event_analytics/utils/utils';
 
 export const Pie = ({ visualizations, layout, config }: any) => {
   const {
@@ -101,7 +102,7 @@ export const Pie = ({ visualizations, layout, config }: any) => {
           labels: labelsOfXAxis,
           values: queriedVizData[field.label],
           type: 'pie',
-          name: field.name,
+          name: getPropName(field),
           hole: type === 'pie' ? 0 : 0.5,
           text: field.name,
           textinfo: 'percent',
