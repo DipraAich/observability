@@ -49,7 +49,6 @@ import {
   EVENT_ANALYTICS_DOCUMENTATION_URL,
   TAB_EVENT_ID,
   TAB_CHART_ID,
-  DEFAULT_AVAILABILITY_QUERY,
   DATE_PICKER_FORMAT,
   GROUPBY,
   AGGREGATIONS,
@@ -425,8 +424,8 @@ export const Explorer = ({
   const prepareAvailability = async () => {
     setSelectedContentTab(TAB_CHART_ID);
     setTriggerAvailability(true);
-    await setTempQuery(DEFAULT_AVAILABILITY_QUERY);
-    await updateQueryInStore(DEFAULT_AVAILABILITY_QUERY);
+    await setTempQuery('');
+    await updateQueryInStore('');
     await handleTimeRangePickerRefresh(true);
   };
 

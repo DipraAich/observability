@@ -85,7 +85,7 @@ const getStandardedOuiField = (name?: string, type?: string) => ({
 const defaultUserConfigs = (queryString, visualizationName: string) => {
   let tempUserConfigs = {};
   const qm = new QueryManager();
-  const statsTokens = qm.queryParser().parse(queryString.rawQuery).getStats();
+  const statsTokens = qm.queryParser().parse(queryString.finalQuery).getStats();
   if (!statsTokens) {
     tempUserConfigs = {
       [AGGREGATIONS]: [],
