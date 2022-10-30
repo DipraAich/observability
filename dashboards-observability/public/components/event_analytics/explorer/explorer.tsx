@@ -721,7 +721,7 @@ export const Explorer = ({
   }
 
   const visualizations: IVisualizationContainerProps = useMemo(() => {
-    return getVizContainerProps({
+    const res = getVizContainerProps({
       vizId: curVisId,
       rawVizData: explorerVisualizations,
       query,
@@ -730,6 +730,7 @@ export const Explorer = ({
       appData: { fromApp: appLogEvents },
       explorer: { explorerData, explorerFields, query, http, pplService },
     });
+    return res;
   }, [curVisId, explorerVisualizations, explorerFields, query, userVizConfigs]);
 
   const callbackForConfig = (childFunc: () => void) => {
