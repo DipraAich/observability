@@ -176,80 +176,80 @@ const defaultUserConfigs = (queryString, visualizationName: string) => {
   return tempUserConfigs;
 };
 
-const getUserConfigs = (
-  userSelectedConfigs: object,
-  vizFields: IField[],
-  visName: string,
-  query
-) => {
-  let configOfUser = userSelectedConfigs;
-  const axesData = getDefaultXYAxisLabels(vizFields, visName);
-  if (!(userSelectedConfigs.dataConfig?.GROUPBY || userSelectedConfigs.dataConfig?.AGGREGATIONS)) {
-    switch (visName) {
-      case VIS_CHART_TYPES.HeatMap:
-        configOfUser = {
-          ...userSelectedConfigs,
-          dataConfig:
-            userSelectedConfigs?.dataConfig === undefined
-              ? { ...defaultUserConfigs(query, visName) }
-              : {
-                  ...userSelectedConfigs?.dataConfig,
-                },
-        };
-        break;
-      case VIS_CHART_TYPES.TreeMap:
-        configOfUser = {
-          ...userSelectedConfigs,
-          dataConfig: {
-            ...userSelectedConfigs?.dataConfig,
-            [GROUPBY]: [
-              {
-                childField: { ...(axesData.xaxis ? axesData.xaxis[0] : initialEntryTreemap) },
-                parentFields:
-                  userSelectedConfigs?.dataConfig !== undefined &&
-                  userSelectedConfigs.dataConfig[GROUPBY]?.length > 0
-                    ? [...userSelectedConfigs.dataConfig[GROUPBY][0][PARENTFIELDS]]
-                    : [],
-              },
-            ],
-            [AGGREGATIONS]: [
-              { valueField: { ...(axesData.yaxis ? axesData.yaxis[0] : initialEntryTreemap) } },
-            ],
-          },
-        };
-        break;
-      case VIS_CHART_TYPES.Histogram:
-        configOfUser = {
-          ...userSelectedConfigs,
-          dataConfig: {
-            ...userSelectedConfigs?.dataConfig,
-            [GROUPBY]: [{ bucketSize: '', bucketOffset: '' }],
-            [AGGREGATIONS]: [],
-          },
-        };
-        break;
-      case VIS_CHART_TYPES.LogsView:
-        configOfUser = {
-          ...userSelectedConfigs,
-          dataConfig: {
-            ...userSelectedConfigs?.dataConfig,
-            ...defaultUserConfigs(query, visName),
-          },
-        };
-        break;
-      default:
-        configOfUser = {
-          ...userSelectedConfigs,
-          dataConfig: {
-            ...userSelectedConfigs?.dataConfig,
-            ...defaultUserConfigs(query, visName),
-          },
-        };
-        break;
-    }
-  }
-  return isEmpty(configOfUser) ? userSelectedConfigs : configOfUser;
-};
+// const getUserConfigs = (
+//   userSelectedConfigs: object,
+//   vizFields: IField[],
+//   visName: string,
+//   query
+// ) => {
+//   let configOfUser = userSelectedConfigs;
+//   const axesData = getDefaultXYAxisLabels(vizFields, visName);
+//   if (!(userSelectedConfigs.dataConfig?.GROUPBY || userSelectedConfigs.dataConfig?.AGGREGATIONS)) {
+//     switch (visName) {
+//       case VIS_CHART_TYPES.HeatMap:
+//         configOfUser = {
+//           ...userSelectedConfigs,
+//           dataConfig:
+//             userSelectedConfigs?.dataConfig === undefined
+//               ? { ...defaultUserConfigs(query, visName) }
+//               : {
+//                   ...userSelectedConfigs?.dataConfig,
+//                 },
+//         };
+//         break;
+//       case VIS_CHART_TYPES.TreeMap:
+//         configOfUser = {
+//           ...userSelectedConfigs,
+//           dataConfig: {
+//             ...userSelectedConfigs?.dataConfig,
+//             [GROUPBY]: [
+//               {
+//                 childField: { ...(axesData.xaxis ? axesData.xaxis[0] : initialEntryTreemap) },
+//                 parentFields:
+//                   userSelectedConfigs?.dataConfig !== undefined &&
+//                   userSelectedConfigs.dataConfig[GROUPBY]?.length > 0
+//                     ? [...userSelectedConfigs.dataConfig[GROUPBY][0][PARENTFIELDS]]
+//                     : [],
+//               },
+//             ],
+//             [AGGREGATIONS]: [
+//               { valueField: { ...(axesData.yaxis ? axesData.yaxis[0] : initialEntryTreemap) } },
+//             ],
+//           },
+//         };
+//         break;
+//       case VIS_CHART_TYPES.Histogram:
+//         configOfUser = {
+//           ...userSelectedConfigs,
+//           dataConfig: {
+//             ...userSelectedConfigs?.dataConfig,
+//             [GROUPBY]: [{ bucketSize: '', bucketOffset: '' }],
+//             [AGGREGATIONS]: [],
+//           },
+//         };
+//         break;
+//       case VIS_CHART_TYPES.LogsView:
+//         configOfUser = {
+//           ...userSelectedConfigs,
+//           dataConfig: {
+//             ...userSelectedConfigs?.dataConfig,
+//             ...defaultUserConfigs(query, visName),
+//           },
+//         };
+//         break;
+//       default:
+//         configOfUser = {
+//           ...userSelectedConfigs,
+//           dataConfig: {
+//             ...userSelectedConfigs?.dataConfig,
+//             ...defaultUserConfigs(query, visName),
+//           },
+//         };
+//         break;
+//     }
+//   }
+//   return isEmpty(configOfUser) ? userSelectedConfigs : configOfUser;
+// };
 
 export const getVisTypeData = (vizId: string) => {
   if (SIMILAR_VIZ_TYPES.includes(vizId)) {
@@ -272,6 +272,10 @@ export const getVizContainerProps = ({
       ? { ...getVisType(vizId, { type: vizId }) }
       : { ...getVisType(vizId) };
 
+  const userSetConfigs = isEmpty(query)
+    ? userConfigs
+    : { dataConfig: { ...defaultUserConfigs(query, userConfigs) } };
+
   return {
     data: {
       appData: { ...appData },
@@ -279,7 +283,7 @@ export const getVizContainerProps = ({
       query: { ...query },
       indexFields: { ...indexFields },
       userConfigs: {
-        ...userConfigs,
+        ...userSetConfigs,
       },
       defaultAxes: {
         ...getDefaultXYAxisLabels(rawVizData?.metadata?.fields, getVisTypeData(vizId).name),
